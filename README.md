@@ -73,7 +73,7 @@ To train a speech separation system, please direct to N-HANS/N_HANS___Speech_Sep
 3. To test your model, __restore_path__ is set to the trained models, __--eval_seeds=test__ is also required.
 
 ## Citation
-If you use auDeep or any code from N-HANS in your research work, you are kindly asked to acknowledge the use of N-HANS in your publications.
+If you use N-HANS or any code from N-HANS in your research work, you are kindly asked to acknowledge the use of N-HANS in your publications.
 
 ## Authors and Contact information
 * Shuo Liu (shuo.liu@informatik.uni-augsburg.de)
