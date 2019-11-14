@@ -2,7 +2,13 @@ __N-HANS__ is a Python toolkit for in-the-wild speech enhancement, including spe
 
 In addition to a Python API, a command line interface is provided to researchers and developers:
                                     __pip install N-HANS__.
-                                    
+
+## Citation
+If you use N-HANS or any code from N-HANS in your research work, you are kindly asked to acknowledge the use of N-HANS in your publications.
+
+____________ publication to be added (archive or JMLR) ________________
+
+
 ## Prerequisites
 * Python2.7
 #### Python Dependencies
@@ -72,8 +78,6 @@ To train a speech separation system, please direct to N-HANS/N_HANS___Speech_Sep
 
 3. To test your model, __restore_path__ is set to the trained models, __--eval_seeds=test__ is also required.
 
-## Citation
-If you use N-HANS or any code from N-HANS in your research work, you are kindly asked to acknowledge the use of N-HANS in your publications.
 
 ## Authors and Contact information
 * Shuo Liu (shuo.liu@informatik.uni-augsburg.de)
