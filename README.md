@@ -7,26 +7,26 @@ __(c) 2019 Shuo Liu, Gil Keren, Björn Schuller: University of Augsburg__ publis
 
 Please direct any questions or requests to Shuo Liu (shuo.liu@informatik.uni-augsburg.de).
 
-## Citation
+# Citation
 If you use N-HANS or any code from N-HANS in your research work, you are kindly asked to acknowledge the use of N-HANS in your publications.
 
 ____________ publication to be added (archive or JMLR) ________________
 
 
-## Prerequisites
+# Prerequisites
 * Python2.7
-#### Python Dependencies
+### Python Dependencies
 * numpy 1.14.5
 * scipy 1.0.1
 * six 1.10.0  
 * tensorflow 1.14.0 or tensforflow-gpu 1.14.0
 
-## Usage
-### Loading Models
+# Usage
+## Loading Models
 After __pip install N-HANS__, users are expexted to create a workspace for audio denoising or separation task, and then use __load_denoiser__ or __load_separator__ to download the trained models and audio examples into the workspace. (The trained models and audio examples can also be found above.)
 
-### Applying N-HANS
-#### Commands
+## Applying N-HANS
+### Commands
 | Task | Command | Discription |
 |---|---|---|
 |__speech denoising__| __nhans_denoiser__ __--input__ noisy.wav &nbsp;&nbsp;&nbsp;&nbsp; __--neg__=noise.wav | __--neg__ implicates the environmental noise |  
@@ -34,16 +34,16 @@ After __pip install N-HANS__, users are expexted to create a workspace for audio
 |__speech separation__| __nhans_separator__ __--mixed.wav__ __--pos__=target.wav  __--neg__=interference.wav | __--pos__ implicates the target speaker &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  __--neg__ hints the interference speaker|
 * All commands can have an additional __--output__ path to save the processed results, default output path is audio_examples/.
 
-#### Examples
-###### Processing single wav sample
+### Examples
+#### Processing single wav sample
 | Task | Example |
 |---|---|
 |__speech denoising__| nhans_denoiser audio_examples/exp2_noisy.wav --neg=audio_examples/exp2_noise.wav| 
 |__selective noise suppresion__| nhans_denoiser audio_examples/exp1_noisy.wav --pos=audio_examples/exp1_posnoise.wav --neg=audio_examples/exp2_negnoise.wav |
 |__speech separation__| nhans_separator audio_examples/mixed.wav --pos=audio_examples/target_speaker.wav --neg=audio_examples/noise_speaker.wav|
 
-###### Processing multiple wav samples in folders
-Please create folders containing noisy, (positive) negative recordings, the recordings for each sample in different folders have an identical filename.   
+#### Processing multiple wav samples in folders
+Please create folders containing noisy, (positive) negative recordings, the recordings for each sample in different folders should have an identical filename.   
 
 | Task | Example |
 |---|---|
@@ -51,13 +51,12 @@ Please create folders containing noisy, (positive) negative recordings, the reco
 |__selective noise suppresion__| nhans_denoiser audio_examples/noisy --pos=audio_examples/pos --neg=audio_examples/neg |
 |__speech separation__| nhans_separator audio_examples/mixed --pos=audio_examples/target --neg=audio_examples/interference|
 
-### Train your own N-HANS
-You can download the respository to train your own selective noise suppression system and speech separation system using N-HANS architecture. 
-1. To train a selective noise suppression system, please direct to N-HANS/N_HANS___Selective_Noise/ and create clean speech and noise list using __create_seeds(speech_dir, noise_dir)__, which will generate for each a .pkl file.
-To train a speech separation system, please direct to N-HANS/N_HANS___Speech_Separation/ and create target and interference speech list using __create_seeds(target_dir, interference_dir)__, which will generate for each a .pkl file.
+## Train your own N-HANS
+You can download the respository to train your own selective audio suppression system and separation system using N-HANS architecture. 
+1. To train a selective audio suppression system, please go into N-HANS/N_HANS___Selective_Noise/ and create clean speech and noise list using __create_seeds__ specific to your folders containg speech .wav files and noise .wav files, which will generate for two .pkl files.
+To train an speech separation system, please go into N-HANS/N_HANS___Speech_Separation/ and create target and interference speech list using __create_seeds__ specific to your folder containing speech .wav files, which will produce a .pkl file.
 
 - The AudioSet noise seeds list that we used for generating training, validation and test set in our publication is provided as .pkl files in __AudioSet_seeds__ above.
-
 
 2. Run main.py script with your specifications, as FLAGS appear in the following table (default specifications were used to achieve our trained_models). The reader.py provides the training, validataion and test data pipeline and feeds the data to main.py, in which N-HANS neural networks are constructed. 
 
@@ -89,7 +88,7 @@ To train a speech separation system, please direct to N-HANS/N_HANS___Speech_Sep
 3. To test your model, __restore_path__ is set to the trained models, __--eval_seeds=test__ is also required.
 
 
-## Authors and Contact Information
+# Authors and Contact Information
 * Shuo Liu (shuo.liu@informatik.uni-augsburg.de)
 * Gil Keren
 * Björn Schuller
