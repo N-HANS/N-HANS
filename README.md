@@ -3,6 +3,10 @@ __N-HANS__ is a Python toolkit for in-the-wild speech enhancement, including spe
 In addition to a Python API, a command line interface is provided to researchers and developers:
                                     __pip install N-HANS__.
 
+(c) 2019 __Shuo Liu, Gil Keren, Björn Schuller: University of Augsburg__ published under GPL v3, see the LICENSE file for details.
+
+Please direct any questions or requests to Shuo Liu (shuo.liu@informatik.uni-augsburg.de).
+
 ## Citation
 If you use N-HANS or any code from N-HANS in your research work, you are kindly asked to acknowledge the use of N-HANS in your publications.
 
@@ -15,7 +19,7 @@ ____________ publication to be added (archive or JMLR) ________________
 * numpy
 * scipy
 * six
-* tensorflow or tensforflow-gpu 1.14.0
+* tensorflow 1.14.0 or tensforflow-gpu 1.14.0
 
 ## Usage
 ### Loading Models
@@ -49,7 +53,11 @@ After __pip install N-HANS__, users are expexted to create a workspace for speec
 You can download the respository to train your own selective noise suppression system and speech separation system using N-HANS architecture. 
 1. To train a selective noise suppression system, please direct to N-HANS/N_HANS___Selective_Noise/ and create clean speech and noise list using __create_seeds(speech_dir, noise_dir)__, which will generate for each a .pkl file.
 To train a speech separation system, please direct to N-HANS/N_HANS___Speech_Separation/ and create target and interference speech list using __create_seeds(target_dir, interference_dir)__, which will generate for each a .pkl file.
-2. Run main.py script with your specifications, as FLAGS appear in the following table (default specifications were used to achieve our trained_models). The reader.py provides the training, validataion and test data pipeline and feeds the data to main.py, in which N-HANS neural networks are located. The training process will then start, its information will be shown.
+
+- The AudioSet noise seeds list that we used for generating training, validation and test set in our publication is provided as .pkl files in __AudioSet_seeds__ above.
+
+
+2. Run main.py script with your specifications, as FLAGS appear in the following table (default specifications were used to achieve our trained_models). The reader.py provides the training, validataion and test data pipeline and feeds the data to main.py, in which N-HANS neural networks are constructed. 
 
 | FLAGS | Default | Funcationalities |
 |---|---:|---|
@@ -79,7 +87,7 @@ To train a speech separation system, please direct to N-HANS/N_HANS___Speech_Sep
 3. To test your model, __restore_path__ is set to the trained models, __--eval_seeds=test__ is also required.
 
 
-## Authors and Contact information
+## Authors and Contact Information
 * Shuo Liu (shuo.liu@informatik.uni-augsburg.de)
 * Gil Keren
 * Björn Schuller
