@@ -23,7 +23,7 @@ ____________ publication to be added (archive or JMLR) ________________
 
 ## Usage
 ### Loading Models
-After __pip install N-HANS__, users are expexted to create a workspace for speech denoising or separation task, and then use __load_denoiser__ or __load_separator__ to download trained models and audio examples into the workspace.
+After __pip install N-HANS__, users are expexted to create a workspace for audio denoising or separation task, and then use __load_denoiser__ or __load_separator__ to download the trained models and audio examples into the workspace. (The trained models and audio examples can also be found above.)
 
 ### Applying N-HANS
 #### Commands
@@ -38,15 +38,17 @@ After __pip install N-HANS__, users are expexted to create a workspace for speec
 ###### Processing single wav sample
 | Task | Example |
 |---|---|
-|__speech denoising__| nhans_denoiser audio_examples/mixed.wav --neg=audio_examples/game_noise.wav| 
-|__selective noise suppresion__| nhans_denoiser audio_examples/mixed.wav --pos=audio_examples/Silent.wav --neg=audio_examples/game_noise.wav |
+|__speech denoising__| nhans_denoiser audio_examples/exp2_noisy.wav --neg=audio_examples/exp2_noise.wav| 
+|__selective noise suppresion__| nhans_denoiser audio_examples/exp1_noisy.wav --pos=audio_examples/exp1_posnoise.wav --neg=audio_examples/exp2_negnoise.wav |
 |__speech separation__| nhans_separator audio_examples/mixed.wav --pos=audio_examples/target_speaker.wav --neg=audio_examples/noise_speaker.wav|
 
 ###### Processing multiple wav samples in folders
+Please create folders containing noisy, (positive) negative recordings, the recordings for each sample in different folders have an identical filename.   
+
 | Task | Example |
 |---|---|
-|__speech denoising__| nhans_denoiser audio_examples/mixed --neg=audio_examples/neg| 
-|__selective noise suppresion__| nhans_denoiser audio_examples/mixed --pos=audio_examples/pos --neg=audio_examples/neg |
+|__speech denoising__| nhans_denoiser audio_examples/noisy --neg=audio_examples/neg| 
+|__selective noise suppresion__| nhans_denoiser audio_examples/noisy --pos=audio_examples/pos --neg=audio_examples/neg |
 |__speech separation__| nhans_separator audio_examples/mixed --pos=audio_examples/target --neg=audio_examples/interference|
 
 ### Train your own N-HANS
