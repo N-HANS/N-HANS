@@ -53,7 +53,7 @@ Please create folders containing noisy, (positive) negative recordings, the reco
 
 ## Train your own N-HANS
 You can download the respository to train your own selective audio suppression system and separation system using N-HANS architecture. 
-1. To train a selective audio suppression system, please go into N-HANS/N_HANS___Selective_Noise/ and create clean speech and noise list using __create_seeds__ specific to your folders containg speech .wav files and noise .wav files, which will generate for two .pkl files. The AudioSet seeds list that we used for generating training, validation and test set in our publication is provided as .pkl files in __AudioSet_seeds__ above.
+1. To train a selective audio suppression system, please go into N-HANS/N_HANS___Selective_Noise/ and create clean speech and noise list using __create_seeds__ specific to your folders containg speech .wav files and noise .wav files, which will generate for two .pkl files. The AudioSet seeds list that we used for generating training, validation and test set in our publication is provided as .pkl files. To download [__AudioSet_seeds__](https://www.dropbox.com/s/cmmi3c89awy8jht/AudioSet_seeds.zip?dl=0).
 
    To train an speech separation system, please go into N-HANS/N_HANS___Speech_Separation/ and create a speech list using __create_seeds__ specific to your folder containing speech .wav files, which will produce a .pkl file.
 
