@@ -16,9 +16,9 @@ ____________ publication to be added (archive or JMLR) ________________
 ## Prerequisites
 * Python2.7
 #### Python Dependencies
-* numpy
-* scipy
-* six
+* numpy 1.14.5
+* scipy 1.0.1
+* six 1.10.0  
 * tensorflow 1.14.0 or tensforflow-gpu 1.14.0
 
 ## Usage
