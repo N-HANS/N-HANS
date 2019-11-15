@@ -3,7 +3,7 @@ __N-HANS__ is a Python toolkit for in-the-wild speech enhancement, including spe
 In addition to a Python API, a command line interface is provided to researchers and developers:
                                     __pip install N-HANS__.
 
-(c) 2019 __Shuo Liu, Gil Keren, Björn Schuller: University of Augsburg__ published under GPL v3, see the LICENSE file for details.
+__(c) 2019 Shuo Liu, Gil Keren, Björn Schuller: University of Augsburg__ published under GPL v3, see the LICENSE file for details.
 
 Please direct any questions or requests to Shuo Liu (shuo.liu@informatik.uni-augsburg.de).
 
