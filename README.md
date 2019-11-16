@@ -23,7 +23,7 @@ ____________ publication to be added (arxiv or JMLR) ________________
 
 # Usage
 ## Loading Models
-After __pip install N-HANS__, users are expexted to create a workspace for audio denoising or separation task, and then use __load_denoiser__ or __load_separator__ to download the trained models and audio examples into the workspace. (The trained models and audio examples can also be found above.)
+After __pip install N-HANS__, users are expexted to create a workspace for audio denoising or separation task, and then Linux users can utilise commands __load_denoiser__ or __load_separator__ to download the trained models and audio examples into the workspace. For other operation systems, please download the __trained_model__ and __audio_examples__ in the corresponding N_HANS subfolders, and put into the created workspace.
 
 ## Applying N-HANS
 ### Commands
