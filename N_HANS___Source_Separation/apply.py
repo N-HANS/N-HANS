@@ -26,16 +26,16 @@ tf.app.flags.DEFINE_string('trained_model_dir', './trained_model', '')
 tf.app.flags.DEFINE_string('trained_model_name', '81457_2-545000', '')
 
 ## to test single sample
-# tf.app.flags.DEFINE_string('input', './audio_examples/mixed.wav', '')
-# tf.app.flags.DEFINE_string('neg', './audio_examples/noise_speaker.wav', '')
-# tf.app.flags.DEFINE_string('pos', './audio_examples/target_speaker.wav', '')
-# tf.app.flags.DEFINE_string('output', './audio_examples/denoised.wav', '')
+tf.app.flags.DEFINE_string('input', './audio_examples/mixed.wav', '')
+tf.app.flags.DEFINE_string('neg', './audio_examples/noise_speaker.wav', '')
+tf.app.flags.DEFINE_string('pos', './audio_examples/target_speaker.wav', '')
+tf.app.flags.DEFINE_string('output', './audio_examples/denoised.wav', '')
 
 ## to test multiple samples
-tf.app.flags.DEFINE_string('input', './wav_folder/mixed', '')
-tf.app.flags.DEFINE_string('neg', './wav_folder/noise_speaker', '')
-tf.app.flags.DEFINE_string('pos', './wav_folder/target_speaker', '')
-tf.app.flags.DEFINE_string('output', './wav_folder/denoised', '')
+# tf.app.flags.DEFINE_string('input', './wav_folder/mixed', '')
+# tf.app.flags.DEFINE_string('neg', './wav_folder/noise_speaker', '')
+# tf.app.flags.DEFINE_string('pos', './wav_folder/target_speaker', '')
+# tf.app.flags.DEFINE_string('output', './wav_folder/denoised', '')
 
 tf.app.flags.DEFINE_float('compensate', 0, '')
 tf.app.flags.DEFINE_boolean('ac', False, '')
@@ -119,9 +119,10 @@ def handle_signals(mixedpath, cleanpath, noisepath):
     noisesamples = read_wav(noisepath)
 
     # Normalize
-    mixedsamples = mixedsamples / (max(abs(mixedsamples))+0.000001)
-    cleansamples = cleansamples / (max(abs(cleansamples))+0.000001)
-    noisesamples = noisesamples / (max(abs(noisesamples))+0.000001)
+    max_scale = max(abs(mixedsamples)+0.000001)
+    mixedsamples = mixedsamples / max_scale
+    cleansamples = cleansamples / max_scale
+    noisesamples = noisesamples / max_scale
     mixedsamples = mixedsamples.astype(np.float32)
     cleansamples = cleansamples.astype(np.float32)
     noisesamples = noisesamples.astype(np.float32)
