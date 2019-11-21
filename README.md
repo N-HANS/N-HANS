@@ -26,6 +26,7 @@ https://arxiv.org/pdf/1911.07062.pdf
 After __pip install N-HANS__, users are expexted to create a workspace for audio denoising or separation task, and then Linux users can utilise commands __load_denoiser__ or __load_separator__ to download the trained models and audio examples into the workspace. For other operation systems, please download the __trained_model__ and __audio_examples__ in the corresponding N_HANS subfolders, and put into the created workspace.
 
 ## Applying N-HANS
+N-HANS is processing standard .wav samples with sampling rate of 16kHz and 16bit Int format. Other formats are sugguested to convert to this requirement.
 ### Commands
 | Task | Command | Discription |
 |---|---|---|
