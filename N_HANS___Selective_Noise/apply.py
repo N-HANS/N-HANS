@@ -43,7 +43,6 @@ tf.app.flags.DEFINE_string('output', './audio_examples/exp1_denoised.wav', '')
 # tf.app.flags.DEFINE_string('pos', './audio_examples/Silent.wav', '')
 # tf.app.flags.DEFINE_string('output', './wav_folder/denoised', '')
 
-
 tf.app.flags.DEFINE_float('compensate', 0, '')
 tf.app.flags.DEFINE_boolean('ac', False, '')
 
@@ -158,9 +157,11 @@ def handle_signals(mixedpath, noisepospath, noisenegpath):
     noisenegsamples = read_wav(noisenegpath)
 
     # Normalize
-    mixedsamples = mixedsamples / (max(abs(mixedsamples))+0.000001)
-    noisepossamples = noisepossamples / (max(abs(noisepossamples))+0.000001)
-    noisenegsamples = noisenegsamples / (max(abs(noisenegsamples))+0.000001)
+    max_scale = max(abs(mixedsamples)+0.000001)
+    mixedsamples = mixedsamples / max_scale
+    wavwrite('/home/user/Desktop/N_HANS_Github/N_HANS___Selective_Noise/audio_examples/mixed_normalised', 16000, mixedsamples)
+    noisepossamples = noisepossamples / max_scale
+    noisenegsamples = noisenegsamples / max_scale
     mixedsamples = mixedsamples.astype(np.float32)
     noisepossamples = noisepossamples.astype(np.float32)
     noisenegsamples = noisenegsamples.astype(np.float32)
