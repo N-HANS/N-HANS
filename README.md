@@ -1,3 +1,5 @@
+![image](http://github.com/N-HANS/N-HANS/raw/master/docs/logoB.png)
+
 __N-HANS__ is a Python toolkit for in-the-wild speech enhancement, including speech, music, and general audio denoising, separation, and selective noise or source suppression. The functionalities are realised based on two neural network models sharing the same architecture, but trained separately. The models are comprised of stacks of residual blocks, each conditioned on additional speech or environmental noise recordings for adapting to different unseen speakers or environments in real life. 
 
 In addition to a Python API, a command line interface is provided to researchers and developers:
