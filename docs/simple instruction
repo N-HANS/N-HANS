@@ -1,0 +1,51 @@
+Documentation can be found in https://github.com/N-HANS/N-HANS for more details
+
+
+
+
+N-HANS is easy to set up, please follow the very brief N-HANS instruction:
+
+
+
+Installation:
+
+	pip install N-HANS (possibly admin user needed) 
+	      or
+	python setup.py install
+	
+*you will get four convenient commands for further operations: load_denoiser, load_separator, nhans_denoiser, nhans_separator
+ 
+
+
+
+
+Loading train_models:
+
+	load_denoiser
+	load_separator
+
+* you will download trained_model and audio_examples in your current directory.
+
+
+
+
+
+Applying N-HANS:
+	
+selective noise suppression:
+	nhans_denoiser --input noisy.wav --pos positive_noise.wav --neg negative_noise.wav --output denoised.wav 	
+
+audio denoising:
+	nhans_denoiser --input noisy.wav --neg negative_noise.wav --output denoised.wav 	
+
+source separation:
+	nhans_denoiser --input mixed_speech.wav --pos target_speaker.wav --neg noise_speaker.wav --output separated.wav
+
+* Note that these commands can also be applied for multiple samples organised in directories, more examples and insturcions can be found in above Github documentaion. 	
+
+
+
+
+
+Training own N-HANS:
+please refer to Github link. 
