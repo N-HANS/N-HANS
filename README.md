@@ -17,11 +17,11 @@ https://arxiv.org/pdf/1911.07062.pdf
 
 
 # Prerequisites
-* Python2.7
+* Python3/Python2.7
 ### Python Dependencies
-* numpy 1.14.5
-* scipy 1.0.1
-* six 1.10.0  
+* numpy >=1.14.5
+* scipy >=1.0.1
+* six >=1.10.0  
 * tensorflow 1.14.0 or tensforflow-gpu 1.14.0
 
 # Usage
