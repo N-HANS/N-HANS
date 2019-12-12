@@ -116,7 +116,7 @@ def model(inputs, istrain):
     :return out        : output feature maps
     '''
     def cont_embed(n, out_dim, scope_name):
-      out = tf.constant(range(0, n), dtype=tf.float32) # [n]
+      out = tf.constant(list(range(0, n)), dtype=tf.float32) # [n]
       out = tf.reshape(out, [n, 1])  # [n, 1]
       out = dense(out, 50, FLAGS.w_std, 0.0, False, scope_name + '_dense1') # [n, 50]
       out = batch_norm(istrain, out, scope_name + scope_name + '_dense1')
