@@ -17,7 +17,7 @@ https://arxiv.org/pdf/1911.07062.pdf
 
 
 # Prerequisites
-* Python3/Python2.7
+* Python3 / Python2.7
 ### Python Dependencies
 * numpy >=1.14.5
 * scipy >=1.0.1
