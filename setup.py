@@ -24,7 +24,7 @@ classifiers = [
 
 install_requires = [
     'numpy==1.14.5',
-    'tensorflow_gpu==1.14.0',
+    'tensorflow_gpu==1.15.0',
     'six==1.10.0',
     'scipy==1.0.1'
 ]
