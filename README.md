@@ -1,5 +1,7 @@
 ![M](/docs/logoM.png)
-Latest News: (Dec. 13, 2019) N-HANS supports python __3__ now!!! 
+Latest News:  (Mar. 25, 2020) Thanks to Meishu Song's Logo sugguestion!  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                     (Dec. 13, 2019) N-HANS supports python __3__ now!!! 
+              
 
 
 __N-HANS__ is a Python toolkit for in-the-wild speech enhancement, including speech, music, and general audio denoising, separation, and selective noise or source suppression. The functionalities are realised based on two neural network models sharing the same architecture, but trained separately. The models are comprised of stacks of residual blocks, each conditioned on additional speech or environmental noise recordings for adapting to different unseen speakers or environments in real life. 
