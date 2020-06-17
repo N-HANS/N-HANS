@@ -1,15 +1,13 @@
 ![M](/docs/logoM.png)
-Latest News:  (Mar. 25, 2020) Thanks to Meishu Song's Logo sugguestion!  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                     (Dec. 13, 2019) N-HANS supports python __3__ now!!! 
-              
+Latest News:  (June. 17, 2020) N-HANS is now compatible with Python3 &  Tensorflow2  
 
 
 __N-HANS__ is a Python toolkit for in-the-wild speech enhancement, including speech, music, and general audio denoising, separation, and selective noise or source suppression. The functionalities are realised based on two neural network models sharing the same architecture, but trained separately. The models are comprised of stacks of residual blocks, each conditioned on additional speech or environmental noise recordings for adapting to different unseen speakers or environments in real life. 
 
 In addition to a Python API, a command line interface is provided to researchers and developers:
-                                    __pip install N-HANS__.
+                                    __pip3 install N-HANS__.
 
-__(c) 2019 Shuo Liu, Gil Keren, Björn Schuller: University of Augsburg__ published under GPL v3, see the LICENSE file for details.
+__(c) 2020 Shuo Liu, Gil Keren, Björn Schuller: University of Augsburg__ published under GPL v3, see the LICENSE file for details.
 
 Please direct any questions or requests to Shuo Liu (shuo.liu@informatik.uni-augsburg.de).
 
@@ -24,45 +22,45 @@ https://arxiv.org/pdf/1911.07062.pdf
 ### Python Dependencies
 * numpy >=1.14.5
 * scipy >=1.0.1
-* six >=1.10.0  
-* tensorflow 1.14.0 or tensforflow-gpu 1.14.0
+* tensorflow/tensorflow-gpu >=1.14.0 or tensorflow >= 2.0
+
 
 # Usage
 ## Loading Models
-After __pip install N-HANS__, users are expexted to create a workspace for audio denoising or separation task, and then Linux users can utilise commands __load_denoiser__ or __load_separator__ to download the trained models and audio examples into the workspace. For other operation systems, please download the __trained_model__ and __audio_examples__ in the corresponding N_HANS subfolders, and put into the created workspace.
+After __pip3 install N-HANS__, users are expexted to create a N-HANS folder for conducting audio denoising or separation tasks. For linux users, commands __load_denoiser__ or __load_separator__ will assist in downloading pretrained denoising and separation models, accompanied by some audio examples. The trained models and audio examples can also be found in the above N_HANS_Selective_Noise and N_HANS_Source_Separation folders, which provides users working on other operation systems the opportunity to apply N-HANS.
 
 ## Applying N-HANS
-N-HANS processes standard .wav audios with sample rate of 16kHz and coded in 16-bit Signed Integer PCM. Other formats are sugguested to convert to this standard setting.
+N-HANS has been developed to process standard .wav audios with sample rate of 16kHz and coded in 16-bit Signed Integer PCM. With the embedded format converter written based on sox package, audio files of other formats are automatically to convert to this standard setting.
+
 ### Commands
 | Task | Command | Discription |
 |---|---|---|
-|__speech denoising__| __nhans_denoiser__ __--input__ noisy.wav &nbsp;&nbsp;&nbsp;&nbsp; __--neg__=noise.wav | __--neg__ implicates the environmental noise |  
-|__selective noise suppresion__| __nhans_denoiser__ __--input__ noisy.wav __--pos__=preserve.wav __--neg__=suppress.wav | __--pos__ implicates the noise to keep &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; __--neg__ hints the noise to suppress |
-|__speech separation__| __nhans_separator__ __--mixed.wav__ __--pos__=target.wav  __--neg__=interference.wav | __--pos__ implicates the target speaker &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  __--neg__ hints the interference speaker|
-* All commands can have an additional __--output__ path to save the processed results, default output path is audio_examples/.
+|__speech denoising__| __nhans_denoiser__ __--input__ noisy.wav &nbsp;&nbsp;&nbsp;&nbsp; __--neg__ noise.wav __--output__ denoised.wav | __--neg__ indicates the environmental noise |  
+|__selective noise suppresion__| __nhans_denoiser__ __--input__ noisy.wav __--pos__ preserve.wav __--neg__=suppress.wav __--output__ denoised.wav | __--pos__ indicates the noise to be preserved &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; __--neg__ hints the noise to be suppressed |
+|__speech separation__| __nhans_separator__ __--input__ mixed.wav __--pos__ target.wav  __--neg__ interference.wav __--output__ separated.wav | __--pos__ indicates the target speaker &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  __--neg__ hints the interference speaker|
 
 ### Examples
 #### Processing single wav sample
 | Task | Example |
 |---|---|
-|__speech denoising__| nhans_denoiser audio_examples/exp2_noisy.wav --neg=audio_examples/exp2_noise.wav| 
-|__selective noise suppresion__| nhans_denoiser audio_examples/exp1_noisy.wav --pos=audio_examples/exp1_posnoise.wav --neg=audio_examples/exp2_negnoise.wav |
-|__speech separation__| nhans_separator audio_examples/mixed.wav --pos=audio_examples/target_speaker.wav --neg=audio_examples/noise_speaker.wav|
+|__speech denoising__| nhans_denoiser --input audio_examples/exp2_noisy.wav --neg audio_examples/exp2_noise.wav --output denoised.wav| 
+|__selective noise suppresion__| nhans_denoiser audio_examples/exp1_noisy.wav --pos audio_examples/exp1_posnoise.wav --neg audio_examples/exp2_negnoise.wav --output denoised.wav|
+|__speech separation__| nhans_separator audio_examples/mixed.wav --pos audio_examples/target_speaker.wav --neg audio_examples/noise_speaker.wav --output denoised.wav|
 
 #### Processing multiple wav samples in folders
-Please create folders containing noisy, (positive) negative recordings, the recordings for each sample in different folders should have an identical filename.   
+Please create folders containing noisy, (positive) negative recordings, the recordings for each example in different folders should have identical filename.   
 
 | Task | Example |
 |---|---|
-|__speech denoising__| nhans_denoiser audio_examples/noisy --neg=audio_examples/neg| 
-|__selective noise suppresion__| nhans_denoiser audio_examples/noisy --pos=audio_examples/pos --neg=audio_examples/neg |
-|__speech separation__| nhans_separator audio_examples/mixed --pos=audio_examples/target --neg=audio_examples/interference|
+|__speech denoising__| nhans_denoiser audio_examples/noisy --neg=audio_examples/neg --output denoised| 
+|__selective noise suppresion__| nhans_denoiser audio_examples/noisy --pos=audio_examples/pos --neg=audio_examples/neg --output denoised|
+|__speech separation__| nhans_separator audio_examples/mixed --pos=audio_examples/target --neg=audio_examples/interference --output separated|
 
 ## Train your own N-HANS
-You can download the respository to train your own selective audio suppression system and separation system using N-HANS architecture. 
-1. To train a selective audio suppression system, please go into N-HANS/N_HANS___Selective_Noise/ and create clean speech and noise list using __create_seeds__ specific to your folders containg speech .wav files and noise .wav files, which will generate for two .pkl files. The AudioSet seeds list that we used for generating training, validation and test set in our publication is provided as .pkl files. To download [__AudioSet_seeds__](https://dl.dropboxusercontent.com/s/690nfzq21fb1x3u/AudioSet_Seeds.zip?dl=0).
+You can train your own selective audio suppression system and separation system using N-HANS architecture based on this respository. 
+1. To train a selective audio suppression system, please go into N-HANS/N_HANS___Selective_Noise/ and create lists for clean speech samples and environment noises. Feed the paths of the folders that individually consists of speech .wav files and noise .wav files in __create_seeds__, which will generate two pickle files (.pkl) containing speech and noise wav files, separately. To maximally train a system that is consistent with our trained model, we provide the seed lists for the data split of AudioSet Corpus (https://research.google.com/audioset/) in our publication. To download [__AudioSet_seeds__](https://dl.dropboxusercontent.com/s/690nfzq21fb1x3u/AudioSet_Seeds.zip?dl=0).
 
-   To train an speech separation system, please go into N-HANS/N_HANS___Speech_Separation/ and create a speech list using __create_seeds__ specific to your folder containing speech .wav files, which will produce a .pkl file.
+   To train an speech separation system, please go into N-HANS/N_HANS___Speech_Separation/ and create a speech list using __create_seeds__ direct to your folder containing speech .wav files, which will produce a .pkl file.
 
 2. Run main.py script with your specifications indicated by FLAGS appear in the following table (default specifications were used to achieve our trained_models). The reader.py provides the training, validataion and test data pipeline and feeds the data to N-HANS neural networks constructed in main.py. 
 
@@ -91,7 +89,7 @@ You can download the respository to train your own selective audio suppression s
 | --summaries | './summaries' | directory for summairies|
 | --dump_results | './dump' | directory for intermediate output of model during training|
 
-3. To test your model, __restore_path__ is set to the trained models, __--eval_seeds=test__ is also required.
+3. To test your model, __restore_path__ is set to the trained models, __--eval_seeds=test__ is required.
 
 
 # Authors and Contact Information
