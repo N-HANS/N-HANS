@@ -35,26 +35,26 @@ N-HANS has been developed to process standard .wav audios with sample rate of 16
 ### Commands
 | Task | Command | Discription |
 |---|---|---|
-|__speech denoising__| __nhans_denoiser__ __--input__ noisy.wav __--output__ denoised.wav &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; __--neg__ noise.wav | __--neg__ the environmental noise |  
-|__selective noise suppresion__| __nhans_denoiser__ __--input__ noisy.wav __--output__ denoised.wav &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; __--pos__ preserve.wav __--neg__ suppress.wav | __--pos__ hints the noise to preserve <br> __--neg__ hints the noise to suppress|
-|__speech separation__| __nhans_separator__ __--input__ mixed.wav __--output__ separated.wav<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; __--pos__ target.wav  __--neg__ interference.wav  | __--pos__ hints the target speaker <br> __--neg__ hints the interference speaker|
+|__speech denoising__| __nhans_denoiser__ __--input__ noisy.wav __--output__ denoised.wav &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; __--neg__ noise.wav | __--neg__ the environmental noise |  
+|__selective noise suppresion__| __nhans_denoiser__ __--input__ noisy.wav __--output__ denoised.wav &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; __--pos__ preserve.wav __--neg__ suppress.wav | __--pos__ indicates the noise to be preserved <br> __--neg__ hints the noise to be suppressed|
+|__speech separation__| __nhans_separator__ __--input__ mixed.wav __--output__ separated.wav<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; __--pos__ target.wav  __--neg__ interference.wav  | __--pos__ indicates the target speaker <br> __--neg__ hints the interference speaker|
 
 ### Examples
 #### Processing single wav sample
 | Task | Example |
 |---|---|
-|__speech denoising__| nhans_denoiser --input audio_examples/exp2_noisy.wav --neg audio_examples/exp2_noise.wav --output denoised.wav| 
-|__selective noise suppresion__| nhans_denoiser audio_examples/exp1_noisy.wav --pos audio_examples/exp1_posnoise.wav --neg audio_examples/exp2_negnoise.wav --output denoised.wav|
-|__speech separation__| nhans_separator audio_examples/mixed.wav --pos audio_examples/target_speaker.wav --neg audio_examples/noise_speaker.wav --output denoised.wav|
+|__speech denoising__| nhans_denoiser --input audio_examples/exp2_noisy.wav --output denoised.wav --neg audio_examples/exp2_noise.wav | 
+|__selective noise suppresion__| nhans_denoiser --input audio_examples/exp1_noisy.wav --output denoised.wav --pos audio_examples/exp1_posnoise.wav --neg audio_examples/exp2_negnoise.wav|
+|__speech separation__| nhans_separator --input audio_examples/mixed.wav --output separated.wav --pos audio_examples/target_speaker.wav --neg audio_examples/noise_speaker.wav|
 
 #### Processing multiple wav samples in folders
 Please create folders containing noisy, (positive) negative recordings, the recordings for each example in different folders should have identical filename.   
 
 | Task | Example |
 |---|---|
-|__speech denoising__| nhans_denoiser audio_examples/noisy --neg=audio_examples/neg --output denoised| 
-|__selective noise suppresion__| nhans_denoiser audio_examples/noisy --pos=audio_examples/pos --neg=audio_examples/neg --output denoised|
-|__speech separation__| nhans_separator audio_examples/mixed --pos=audio_examples/target --neg=audio_examples/interference --output separated|
+|__speech denoising__| nhans_denoiser --input audio_examples/noisy_dir --output denoised_dir --neg audio_examples/neg_dir| 
+|__selective noise suppresion__| nhans_denoiser --input audio_examples/noisy_dir --output denoised_dir --pos audio_examples/pos_dir --neg=audio_examples/neg_dir |
+|__speech separation__| nhans_separator --input audio_examples/mixed_dir --output separated_dir --pos=audio_examples/target_dir --neg=audio_examples/interference_dir|
 
 ## Train your own N-HANS
 You can train your own selective audio suppression system and separation system using N-HANS architecture based on this respository. 
