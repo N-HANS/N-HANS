@@ -1,195 +1,180 @@
 ########################################################################################################################
 #                                          N-HANS speech separator: apply                                              #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-#   Description:      Apply N-HANS trained separator for audio.                                                        #
+#   Discription:      Apply N-HANS trained models for audio.                                                           #
 #   Authors:          Shuo Liu, Gil Keren, Bjoern Schuller                                                             #
-#   Affiliation:      ZD.B Chair of Embedded Intelligence for Health Care and Wellbeing, University of Augsburg (UAU)  #
-#   Version:          1.0                                                                                              #
-#   Last Update:      Nov. 14, 2019                                                                                    #
-#   Dependence Files: main.py                                                                                          #
+#   Afficiation:      Chair of Embedded Intelligence for Health Care and Wellbeing, University of Augsburg (UAU)  #
+#   Date and Time:    May. 04, 2020                                                                                    #
+#   Modified:         xxx                                                                                              #
+#   Version:          1.5                                                                                              #
+#   Dependence Files: xxx                                                                                              #
 #   Contact:          shuo.liu@informatik.uni-augburg.de                                                               #
 ########################################################################################################################
 
 from __future__ import division, absolute_import, print_function
+import math, functools
 import numpy as np
+import warnings
+warnings.filterwarnings('ignore', category=FutureWarning)
 import tensorflow as tf
-import math
-import os
+if int(tf.__version__.split('.')[0]) == 2:
+    import tensorflow.compat.v1 as tf
+    tf.compat.v1.disable_v2_behavior()
 from scipy.io.wavfile import read as wavread
 from scipy.io.wavfile import write as wavwrite
 from main import model
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
-
-FLAGS = tf.app.flags.FLAGS
-
-tf.app.flags.DEFINE_string('trained_model_dir', './trained_model', '')
-tf.app.flags.DEFINE_string('trained_model_name', '81457_2-545000', '')
-
-## to test single sample
-tf.app.flags.DEFINE_string('input', './audio_examples/mixed.wav', '')
-tf.app.flags.DEFINE_string('neg', './audio_examples/noise_speaker.wav', '')
-tf.app.flags.DEFINE_string('pos', './audio_examples/target_speaker.wav', '')
-tf.app.flags.DEFINE_string('output', './audio_examples/denoised.wav', '')
-
-## to test multiple samples
-# tf.app.flags.DEFINE_string('input', './wav_folder/mixed', '')
-# tf.app.flags.DEFINE_string('neg', './wav_folder/noise_speaker', '')
-# tf.app.flags.DEFINE_string('pos', './wav_folder/target_speaker', '')
-# tf.app.flags.DEFINE_string('output', './wav_folder/denoised', '')
-
-tf.app.flags.DEFINE_float('compensate', 0, '')
-tf.app.flags.DEFINE_boolean('ac', False, '')
+FLAGS = tf.compat.v1.flags.FLAGS
+tf.compat.v1.flags.DEFINE_string('input', './audio_examples/mixed.wav', '')
+tf.compat.v1.flags.DEFINE_string('neg', './audio_examples/noise_speaker.wav', '')
+tf.compat.v1.flags.DEFINE_string('pos', './audio_examples/target_speaker.wav', '')
+tf.compat.v1.flags.DEFINE_string('output', './audio_examples/denoised.wav', '')
+tf.compat.v1.flags.DEFINE_float('compensate', 0, '')
+tf.compat.v1.flags.DEFINE_boolean('ac', False, '')
 
 Noise_Win = 200
 Mix_Win = 35
 
 
-#############################################     Assistence Functions     #############################################
+"""
+Assistence Functions
+"""
+
 
 def read_wav(in_path):
-  rate, samples = wavread(in_path)
-  assert rate == 16000
-  # assert samples.dtype == 'int16'
-  if len(samples.shape) > 1:
-    samples = samples.mean(axis=1)
-  assert len(samples.shape) == 1
-  return samples
+    rate, samples = wavread(in_path)
+    assert rate == FLAGS.Fs
+    assert samples.dtype == 'int16'
+    if len(samples.shape) > 1:
+        samples = samples.mean(axis=1)
+    assert len(samples.shape) == 1
+    return samples
 
 
 def domixing(cleansamples, noisesamples, snr):
-  # Repeat the noise if it is shorter than the speech, or shorter it if it's longer
-  nse = noisesamples
-  while len(cleansamples) - len(nse) > 0: # Make noise longer
-    diff = len(cleansamples) - len(nse)
-    nse = np.concatenate([nse, noisesamples[:diff]], axis=0)
-  if len(cleansamples) - len(noisesamples) < 0: # Make noise shorter
-    nse = noisesamples[:len(cleansamples)]
-  sig = cleansamples
+    # Repeat the noise if it is shorter than the speech, or shorter it if it's longer
+    nse = noisesamples
+    while len(cleansamples) - len(nse) > 0: # Make noise longer
+        diff = len(cleansamples) - len(nse)
+        nse = np.concatenate([nse, noisesamples[:diff]], axis=0)
+    if len(cleansamples) - len(noisesamples) < 0: # Make noise shorter
+        nse = noisesamples[:len(cleansamples)]
+    sig = cleansamples
 
-  # Power of signal and noise
-  psignal = sum(abs(sig) * abs(sig)) / sig.shape[0]
-  pnoise  = sum(abs(nse) * abs(nse)) / nse.shape[0]
+    # Power of signal and noise
+    psignal = sum(abs(sig) * abs(sig)) / sig.shape[0]
+    pnoise = sum(abs(nse) * abs(nse)) / nse.shape[0]
 
-  # Compute scale factor
-  if pnoise == 0:
-    K = 1
-  else:
-    K = (psignal / pnoise) * pow(10, -snr / 10.0)
-  K = np.sqrt(K)
+    # Compute scale factor
+    if pnoise == 0:
+        K = 1
+    else:
+        K = (psignal / pnoise) * pow(10, -snr / 10.0)
+    K = np.sqrt(K)
 
-  # Mix
-  noise_scaled = K * nse                                # Scale the noise
-  mixed = sig + noise_scaled                            # Mix
-  mixed = mixed / (max(abs(mixed))+0.000001)            # Normalize
-  return mixed, K
+    # Mix
+    noise_scaled = K * nse                                # Scale the noise
+    mixed = sig + noise_scaled                            # Mix
+    mixed = mixed / (max(abs(mixed))+0.000001)            # Normalize
+    return mixed, K
 
 
 def combine_signals(cleanpath, noisepath):
-  try:
-    # Read Wavs
-    cleansamples = read_wav(cleanpath)
-    noisesamples = read_wav(noisepath)
+    try:
+        # Read Wavs
+        cleansamples = read_wav(cleanpath)
+        noisesamples = read_wav(noisepath)
 
-    # Normalize
-    cleansamples = cleansamples / (max(abs(cleansamples))+0.000001)
-    noisesamples = noisesamples / (max(abs(noisesamples))+0.000001)
-    cleansamples = cleansamples.astype(np.float32)
-    noisesamples = noisesamples.astype(np.float32)
+        # Normalize
+        cleansamples = cleansamples / (max(abs(cleansamples))+0.000001)
+        noisesamples = noisesamples / (max(abs(noisesamples))+0.000001)
+        cleansamples = cleansamples.astype(np.float32)
+        noisesamples = noisesamples.astype(np.float32)
 
-    # Cut the end to have an exact number of frames
-    cleansamples = cleansamples[:-((len(cleansamples) - 400) % 160)]
+        # Cut the end to have an exact number of frames
+        win_samples = int(FLAGS.Fs * 0.025)
+        hop_samples = int(FLAGS.Fs * 0.010)
+        cleansamples = cleansamples[:-((len(cleansamples) - win_samples) % hop_samples)]
 
-    # Choose SNR
-    SNRs = [-5, -3, -1, 0, 1, 3, 5]
-    # The noise is the beginning of the file, and mix the rest
-    snr = 0
-    mixed, K = domixing(cleansamples, noisesamples, snr)
-    return cleansamples, noisesamples * K, mixed, np.array(snr, dtype=np.int32)
-
-  except:
-    print('error in threads')
-    print(cleanpath, noisepath)
+        # Choose SNR
+        SNRs = [-5, -3, -1, 0, 1, 3, 5]
+        # The noise is the beginning of the file, and mix the rest
+        snr = 0
+        mixed, K = domixing(cleansamples, noisesamples, snr)
+        return cleansamples, noisesamples * K, mixed, np.array(snr, dtype=np.int32)
+    except:
+        print('error in threads')
+        print(cleanpath, noisepath)
 
 
 def handle_signals(mixedpath, cleanpath, noisepath):
-  try:
-    # Read Wavs
-    mixedsamples = read_wav(mixedpath)
-    cleansamples = read_wav(cleanpath)
-    noisesamples = read_wav(noisepath)
+    try:
+        # Read Wavs
+        mixedsamples = read_wav(mixedpath)
+        cleansamples = read_wav(cleanpath)
+        noisesamples = read_wav(noisepath)
 
-    # Normalize
-    max_scale = max(abs(mixedsamples)+0.000001)
-    mixedsamples = mixedsamples / max_scale
-    cleansamples = cleansamples / max_scale
-    noisesamples = noisesamples / max_scale
-    mixedsamples = mixedsamples.astype(np.float32)
-    cleansamples = cleansamples.astype(np.float32)
-    noisesamples = noisesamples.astype(np.float32)
+        # Normalize
+        mixedsamples = mixedsamples / (max(abs(mixedsamples))+0.000001)
+        cleansamples = cleansamples / (max(abs(cleansamples))+0.000001)
+        noisesamples = noisesamples / (max(abs(noisesamples))+0.000001)
+        mixedsamples = mixedsamples.astype(np.float32)
+        cleansamples = cleansamples.astype(np.float32)
+        noisesamples = noisesamples.astype(np.float32)
 
-    # Cut the end to have an exact number of frames
-    if (len(mixedsamples) - 400) % 160 != 0:
-        mixedsamples = mixedsamples[:-((len(mixedsamples) - 400) % 160)]
+        # Cut the end to have an exact number of frames
+        win_samples = int(FLAGS.Fs * 0.025)
+        hop_samples = int(FLAGS.Fs * 0.010)
+        if (len(mixedsamples) - win_samples) % hop_samples != 0:
+            mixedsamples = mixedsamples[:-((len(mixedsamples) - win_samples) % hop_samples)]
 
-    nse = noisesamples
-    cln = cleansamples
-    while len(mixedsamples) - len(nse) > 0:  # Make noise longer
-        diff = len(mixedsamples) - len(nse)
-        nse = np.concatenate([nse, noisesamples[:diff]], axis=0)
+        return cleansamples, noisesamples, mixedsamples
 
-    while len(mixedsamples) - len(cln) > 0:  # Make noise longer
-        diff = len(mixedsamples) - len(cln)
-        cln = np.concatenate([cln, noisesamples[:diff]], axis=0)
-
-    if len(mixedsamples) - len(noisesamples) < 0:  # Make noise shorter
-        nse = noisesamples[:len(mixedsamples)]
-    if len(mixedsamples) - len(cleansamples) < 0:  # Make noise shorter
-        cln = cleansamples[:len(mixedsamples)]
-
-    noisesamples = nse
-    cleansamples = cln
-
-    return cleansamples, noisesamples, mixedsamples
-
-  except:
-    print('error in threads')
-    print(mixedpath, cleanpath, noisepath)
+    except:
+        print('error in threads')
+        print(mixedpath, cleanpath, noisepath)
 
 
 def pad_1D_for_windowing(tensor, length):
     len_before = ((length + 1) // 2) - 1
     len_after = length // 2
-    return tf.pad(tensor, [[len_before, len_after],[0,0]])
+    return tf.pad(tensor, [[len_before, len_after], [0, 0]])
 
 
 def strided_crop(tensor, length, stride):
-  # we assume that we have a length dimension and a feature dimension
-  assert len(tensor.shape) == 2
-  n_features = int(tensor.shape[1])
-  padded = pad_1D_for_windowing(tensor, length)
-  windows = tf.extract_image_patches(tf.expand_dims(tf.expand_dims(padded, axis=0), axis=3),
+    # we assume that we have a length dimension and a feature dimension
+    assert len(tensor.shape) == 2
+    n_features = int(tensor.shape[1])
+    padded = pad_1D_for_windowing(tensor, length)
+    windows = tf.extract_image_patches(tf.expand_dims(tf.expand_dims(padded, axis=0), axis=3),
                                            ksizes=[1, length, n_features, 1],
                                            strides=[1, stride, n_features, 1],
                                            rates=[1, 1, 1, 1],
                                            padding='VALID')
-  return tf.reshape(windows, [-1, length, n_features])
+    return tf.reshape(windows, [-1, length, n_features])
 
 
-def recover_samples_from_spectrum(logspectrum_stft, spectrum_phase, save_to=None):
+def recover_samples_from_spectrum(logspectrum_stft, spectrum_phase, save_to):
     abs_spectrum = np.exp(logspectrum_stft)
     spectrum = abs_spectrum * (np.exp(1j * spectrum_phase))
     istft_graph = tf.Graph()
     with istft_graph.as_default():
-        stft_ph = tf.placeholder(tf.complex64, shape=(None, 201))
-        samples = tf.contrib.signal.inverse_stft(stft_ph, 400, 160, 400)
+        num_fea = int(FLAGS.Fs * 0.025) / 2 + 1
+        frame_length = int(FLAGS.Fs * 0.025)
+        frame_step = int(FLAGS.Fs * 0.010)
+        stft_ph = tf.placeholder(tf.complex64, shape=(None, num_fea))
+        samples = tf.signal.inverse_stft(stft_ph, frame_length, frame_step, frame_length,
+                                                 window_fn=tf.signal.inverse_stft_window_fn(frame_step, forward_window_fn=functools.partial(tf.signal.hann_window, periodic=True)))
         istft_sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
         samples_ = istft_sess.run(samples, feed_dict={stft_ph: spectrum})
-        if save_to:
-            wavwrite(save_to, 16000, samples_)
+        wavwrite(save_to, FLAGS.Fs, samples_)
 
 
+"""
+Apply N-HANS speech separater
+"""
 
-################################################     Apply N-HANS speech separater     #################################
 
 def apply_demo(cleanpath, noisepath, save_to):
 
@@ -216,7 +201,9 @@ def apply_demo(cleanpath, noisepath, save_to):
 
             sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
 
-            mix_stft, clean_stft, noise_stft = [tf.contrib.signal.stft(wav, 400, 160, fft_length=400) for wav in [mix_wav, clean_wav, noise_wav]]
+            win_samples = int(FLAGS.Fs * 0.025)
+            hop_samples = int(FLAGS.Fs * 0.010)
+            mix_stft, clean_stft, noise_stft = [tf.signal.stft(wav, win_samples, hop_samples, fft_length=win_samples) for wav in [mix_wav, clean_wav, noise_wav]]
 
             mix_spectrum, clean_spectrum, noise_spectrum = [tf.log(tf.abs(wav_stft) + 1e-5) for wav_stft in [mix_stft, clean_stft, noise_stft]]
 
@@ -238,12 +225,10 @@ def apply_demo(cleanpath, noisepath, save_to):
             mixedphs = strided_crop(mix_phase[Noise_Win:], 1, 1)
 
             # get data
-            # print('--------------------------------')
+            print('--------------------------------')
             mix_spectra_, clean_spectra_, noise_spectra_ = sess.run([mix_spectra, clean_spectra, noise_spectra])
             mixedphs_ = sess.run(mixedphs, feed_dict={cleanpath_ph: cleanpath,
                                                       noisepath_ph: noisepath})
-
-
 
     mb = 100
     batches = int(math.ceil(len(mix_spectra_) / float(mb)))
@@ -251,17 +236,18 @@ def apply_demo(cleanpath, noisepath, save_to):
     denoised = []
     mix_centers = []
 
-    ## denoiseing
+    # denoising
     # graph
     eg = tf.Graph()
     with eg.as_default():
         esess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
         with tf.device('/gpu:0'):
-            in_ph = [tf.placeholder(dtype=tf.float32, shape=[None, 1, 201], name='cleanph'),
-                       tf.placeholder(dtype=tf.float32, shape=[None, Mix_Win, 201], name='mixedph'),
-                       tf.placeholder(dtype=tf.float32, shape=[None, 1, 201], name='mixedphaseph'),
-                       tf.placeholder(dtype=tf.float32, shape=[None, Noise_Win, 201], name='noisecontextph'),
-                       tf.placeholder(dtype=tf.float32, shape=[None, Noise_Win, 201], name='cleancontextph'),
+            num_fea = int(FLAGS.Fs * 0.025) / 2 + 1
+            in_ph = [tf.placeholder(dtype=tf.float32, shape=[None, 1, num_fea], name='cleanph'),
+                       tf.placeholder(dtype=tf.float32, shape=[None, Mix_Win, num_fea], name='mixedph'),
+                       tf.placeholder(dtype=tf.float32, shape=[None, 1, num_fea], name='mixedphaseph'),
+                       tf.placeholder(dtype=tf.float32, shape=[None, Noise_Win, num_fea], name='noisecontextph'),
+                       tf.placeholder(dtype=tf.float32, shape=[None, Noise_Win, num_fea], name='cleancontextph'),
                        tf.placeholder(dtype=tf.int32, shape=[None], name='locationph'),
                        tf.placeholder(dtype=tf.string, shape=[None], name='cleanpathph'),
                        tf.placeholder(dtype=tf.string, shape=[None], name='noisepathph'),
@@ -269,11 +255,9 @@ def apply_demo(cleanpath, noisepath, save_to):
             _, _, outputs = model(in_ph, False)
         esaver = tf.train.Saver(tf.global_variables())
 
-    # load in trained model
-    checkpoints_dir = FLAGS.trained_model_dir
-    model_name = FLAGS.trained_model_name
-    esaver = tf.train.import_meta_graph(os.path.join(checkpoints_dir, model_name + '.meta'))
-    esaver.restore(esess, os.path.join(checkpoints_dir, model_name))
+    checkpoints_dir = './trained_model'
+    esaver = tf.train.import_meta_graph(checkpoints_dir + '/=81457_2-545000.meta')
+    esaver.restore(esess, checkpoints_dir + '/=81457_2-545000')
 
     mixed_tensor = eg.get_tensor_by_name('mixedph:0')
     noise_tensor = eg.get_tensor_by_name('noisecontextph:0')
@@ -297,12 +281,8 @@ def apply_demo(cleanpath, noisepath, save_to):
     mix_centers = np.concatenate(mix_centers, axis=0)
 
     recover_samples_from_spectrum(denoised, mixedphs_[:, 0, :], save_to)
-
-    verbose = 0
-    if verbose:
-        save_to = save_to if len(save_to.split('/')[-1]) == 0 else save_to[:-len(save_to.split('/')[-1])]
-        mix_save_to = save_to + 'mixed.wav'
-        recover_samples_from_spectrum(mix_centers, mixedphs_[:, 0, :], mix_save_to)
+    mix_save_to = save_to[:-15] + 'mixed_demo.wav'
+    recover_samples_from_spectrum(mix_centers, mixedphs_[:, 0, :], mix_save_to)
 
 
 def apply_separator(mixedpath, cleanpath, noisepath, save_to):
@@ -333,12 +313,13 @@ def apply_separator(mixedpath, cleanpath, noisepath, save_to):
 
             sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
 
-            mix_stft, clean_stft, noise_stft = [tf.contrib.signal.stft(wav, 400, 160, fft_length=400) for wav in [mix_wav, clean_wav, noise_wav]]
+            win_samples = int(FLAGS.Fs * 0.025)
+            hop_samples = int(FLAGS.Fs * 0.010)
+            mix_stft, clean_stft, noise_stft = [tf.signal.stft(wav, win_samples, hop_samples, fft_length=win_samples) for wav in [mix_wav, clean_wav, noise_wav]]
 
             mix_spectrum, clean_spectrum, noise_spectrum = [tf.log(tf.abs(wav_stft) + 1e-5) for wav_stft in [mix_stft, clean_stft, noise_stft]]
 
             mix_phase = tf.angle(mix_stft)
-
 
             # crop data
             mix_spectra = strided_crop(mix_spectrum, Mix_Win, 1)
@@ -355,7 +336,7 @@ def apply_separator(mixedpath, cleanpath, noisepath, save_to):
             mixedphs = strided_crop(mix_phase, 1, 1)
 
             # get data
-            # print('---------------------------------------------------------------------------------------------')
+            print('---------------------------------------------------------------------------------------------')
             mix_spectra_, clean_spectra_, noise_spectra_ = sess.run([mix_spectra, clean_spectra, noise_spectra])
             mixedphs_ = sess.run(mixedphs, feed_dict={mixedpath_ph: mixedpath,
                                                       cleanpath_ph: cleanpath,
@@ -366,17 +347,18 @@ def apply_separator(mixedpath, cleanpath, noisepath, save_to):
     denoised = []
     mix_centers = []
 
-    ## denoiseing
+    # denoiseing
     # graph
     eg = tf.Graph()
     with eg.as_default():
         esess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
         with tf.device('/gpu:0'):
-            in_ph = [tf.placeholder(dtype=tf.float32, shape=[None, 1, 201], name='cleanph'),
-                       tf.placeholder(dtype=tf.float32, shape=[None, Mix_Win, 201], name='mixedph'),
-                       tf.placeholder(dtype=tf.float32, shape=[None, 1, 201], name='mixedphaseph'),
-                       tf.placeholder(dtype=tf.float32, shape=[None, Noise_Win, 201], name='noisecontextph'),
-                       tf.placeholder(dtype=tf.float32, shape=[None, Noise_Win, 201], name='cleancontextph'),
+            num_fea = int(FLAGS.Fs * 0.025) / 2 + 1
+            in_ph = [tf.placeholder(dtype=tf.float32, shape=[None, 1, num_fea], name='cleanph'),
+                       tf.placeholder(dtype=tf.float32, shape=[None, Mix_Win, num_fea], name='mixedph'),
+                       tf.placeholder(dtype=tf.float32, shape=[None, 1, num_fea], name='mixedphaseph'),
+                       tf.placeholder(dtype=tf.float32, shape=[None, Noise_Win, num_fea], name='noisecontextph'),
+                       tf.placeholder(dtype=tf.float32, shape=[None, Noise_Win, num_fea], name='cleancontextph'),
                        tf.placeholder(dtype=tf.int32, shape=[None], name='locationph'),
                        tf.placeholder(dtype=tf.string, shape=[None], name='cleanpathph'),
                        tf.placeholder(dtype=tf.string, shape=[None], name='noisepathph'),
@@ -384,11 +366,10 @@ def apply_separator(mixedpath, cleanpath, noisepath, save_to):
             _, _, outputs = model(in_ph, False)
         esaver = tf.train.Saver(tf.global_variables())
 
-    # load in trained model
-    checkpoints_dir = FLAGS.trained_model_dir
-    model_name = FLAGS.trained_model_name
-    esaver = tf.train.import_meta_graph(os.path.join(checkpoints_dir, model_name + '.meta'))
-    esaver.restore(esess, os.path.join(checkpoints_dir, model_name))
+    checkpoints_dir = './trained_model'
+    # checkpoints_dir = '/home/user/on_gpu/checkpoints/N_HANS___Source_Separation'
+    esaver = tf.train.import_meta_graph(checkpoints_dir + '/81457_2-545000.meta')
+    esaver.restore(esess, checkpoints_dir + '/81457_2-545000')
 
     mixed_tensor = eg.get_tensor_by_name('mixedph:0')
     noise_tensor = eg.get_tensor_by_name('noisecontextph:0')
@@ -412,59 +393,22 @@ def apply_separator(mixedpath, cleanpath, noisepath, save_to):
     mix_centers = np.concatenate(mix_centers, axis=0)
 
     recover_samples_from_spectrum(denoised, mixedphs_[:, 0, :], save_to)
-    verbose = 0
-    if verbose:
-        save_to = save_to if len(save_to.split('/')[-1]) == 0 else save_to[:-len(save_to.split('/')[-1])]
-        mix_save_to = save_to + 'mixed.wav'
-        recover_samples_from_spectrum(mix_centers, mixedphs_[:, 0, :], mix_save_to)
+    mix_save_to = save_to[:-12] + 'mixed_processed.wav'
+    recover_samples_from_spectrum(mix_centers, mixedphs_[:, 0, :], mix_save_to)
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
+    # dir = '/nas/staff/data_work/Sure/example_wav/'
     mixedpath = FLAGS.input
     noisepath = FLAGS.neg
     cleanpath = FLAGS.pos
     save_to = FLAGS.output
+    # cleanpath = dir + '00079.wav'
+    # noisepath = dir + '00278.wav'
 
-    if os.path.isdir(mixedpath) and os.path.isdir(cleanpath) and os.path.isdir(noisepath) and os.path.isdir(save_to):
-        print('##########################################')
-        print(' Applying N-HANS source separation system ')
-        print('##########################################')
+    # save_to = dir + 'output_demo.wav'
+    # apply_demo(cleanpath, noisepath, save_to)
 
-        for file in os.listdir(mixedpath):
-            mixedwav = os.path.join(mixedpath, file)
-            negwav = os.path.join(noisepath, file)
-            poswav = os.path.join(cleanpath, file)
-            savewav = os.path.join(save_to, file)
-            print('Processing:')
-            print('  Input : {}'.format(mixedwav))
-            print('  +rec  : {}'.format(poswav))
-            print('  -rec  : {}'.format(negwav))
-            apply_separator(mixedwav, poswav, negwav, savewav)
-            print('Processed result:')
-            print('  Output: {}'.format(savewav))
-            print('----------------------------------')
-            print('')
-
-    elif mixedpath.endswith('.wav') and cleanpath.endswith('.wav') and noisepath.endswith('.wav') and save_to.endswith('.wav'):
-        print('##########################################')
-        print(' Applying N-HANS source separation system ')
-        print('##########################################')
-        print('Processing:')
-        print('  Input : {}'.format(mixedpath))
-        print('  +rec  : {}'.format(cleanpath))
-        print('  -rec  : {}'.format(noisepath))
-        apply_separator(mixedpath, cleanpath, noisepath, save_to)
-        print('Processed result:')
-        print('  Output: {}'.format(save_to))
-        print('----------------------------------')
-        print('')
-
-    else:
-        print('Please give the .wav file path or the path to folders containing .wav files')
-
-
-
-
-
-
-
+    # save_to = dir + 'output.wav'
+    # mixedpath = dir + 'mixed_int_ss.wav'
+    apply_separator(mixedpath, cleanpath, noisepath, save_to)
