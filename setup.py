@@ -8,30 +8,28 @@ except:
 	from distutils.core import setup
 
 
-
 def read(fname):
 	return codecs.open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-platforms = ['linux']
 classifiers = [
-    'Development Status :: 3 - Alpha',
+    'Development Status :: 4 - Beta',
     'Topic :: Multimedia :: Sound/Audio',
+    'Topic :: Multimedia :: Sound/Audio :: Speech',
     'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
-    'Programming Language :: Python :: 2',
-    'Programming Language :: Python :: 2.7',
+    'Programming Language :: Python :: 3',
 ]
 
 install_requires = [
-    'numpy==1.14.5',
-    'tensorflow_gpu==1.14.0',
-    'six==1.10.0',
-    'scipy==1.0.1'
+    'numpy>=1.14.5',
+    'tensorflow_gpu>=1.14.0',
+    'scipy>=1.0.1'
+    'sox>=1.3.7'
 ]
 
     
 setup(name='N-HANS',
-      version='1.6',
+      version='2020.06.22',
       description='Neuro-Holistic Audio-eNhancement System',
       long_description='',
 	  packages=['N_HANS','N_HANS.N_HANS___Selective_Noise','N_HANS.N_HANS___Source_Separation'],
@@ -39,7 +37,7 @@ setup(name='N-HANS',
       author_email="shuo.liu@informatik.uni-augsburg.de",
       url="https://github.com/N-HANS/N-HANS",
       license="License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-      platforms=['linux'],
+      # platforms=['linux'],
       classifiers=classifiers,
       install_requires=install_requires,
 	  scripts = [],
