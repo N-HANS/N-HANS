@@ -35,10 +35,9 @@ N-HANS has been developed to process standard .wav audios with sample rate of 16
 ### Commands
 | Task | Command | Discription |
 |---|---|---|
-|<img width=4/><img width=5/>|<img width=15/>|
-|__speech <br> denoising__| __nhans_denoiser__ __--input__ noisy.wav __--output__ denoised.wav <br>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; __--neg__ noise.wav | __--neg__ the environmental noise |  
-|__selective noise suppresion__| __nhans_denoiser__ __--input__ noisy.wav __--output__ denoised.wav <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; __--pos__ preserve.wav __--neg__ suppress.wav | __--pos__ hints the noise to preserve <br> __--neg__ hints the noise to suppress|
-|__speech <br> separation__| __nhans_separator__ __--input__ mixed.wav __--output__ separated.wav <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; __--pos__ target.wav  __--neg__ interference.wav  | __--pos__ indicates the target speaker <br> __--neg__ hints the interference speaker|
+|__speech denoising__| __nhans_denoiser__ __--input__ noisy.wav __--output__ denoised.wav &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; __--neg__ noise.wav | __--neg__ the environmental noise |  
+|__selective noise suppresion__| __nhans_denoiser__ __--input__ noisy.wav __--output__ denoised.wav &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; __--pos__ preserve.wav __--neg__ suppress.wav | __--pos__ hints the noise to preserve <br> __--neg__ hints the noise to suppress|
+|__speech separation__| __nhans_separator__ __--input__ mixed.wav __--output__ separated.wav<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; __--pos__ target.wav  __--neg__ interference.wav  | __--pos__ hints the target speaker <br> __--neg__ hints the interference speaker|
 
 ### Examples
 #### Processing single wav sample
