@@ -1,11 +1,11 @@
 ![M](/docs/logo_m_2.png)
-Latest News:  (June. 17, 2020) N-HANS is now compatible with Python3 &  Tensorflow2  
+<!--Latest News:  (June. 17, 2020) N-HANS is now compatible with Python3 &  Tensorflow2 --> 
 
 
 __N-HANS__ is a Python toolkit for in-the-wild speech enhancement, including speech, music, and general audio denoising, separation, and selective noise or source suppression. The functionalities are realised based on two neural network models sharing the same architecture, but trained separately. The models are comprised of stacks of residual blocks, each conditioned on additional speech or environmental noise recordings for adapting to different unseen speakers or environments in real life. 
 
-In addition to a Python API, a command line interface is provided to researchers and developers:
-                                    __pip3 install N-HANS__.
+<!--In addition to a Python API, a command line interface is provided to researchers and developers:-->
+                                    __pip3 install N-HANS__
 
 __(c) 2020 Shuo Liu, Gil Keren, Björn Schuller: University of Augsburg__ published under GPL v3, see the LICENSE file for details.
 
