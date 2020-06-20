@@ -1,4 +1,4 @@
-![M](/docs/logoM.png)
+![M](/docs/logo_m_2.png)
 Latest News:  (June. 17, 2020) N-HANS is now compatible with Python3 &  Tensorflow2  
 
 
