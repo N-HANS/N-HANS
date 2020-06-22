@@ -1,14 +1,20 @@
+[![PyPI](https://img.shields.io/badge/Pypi%20Package-2020.6.22-yellow)]()
+[![PyPI](https://img.shields.io/badge/Python-2.7%7C3.6--3.8-blue)]()
+[![PyPI](https://img.shields.io/badge/Tensorflow-1.14%7C2.0--2.2-orange)]()
+[![GitHub license](https://img.shields.io/badge/pysox-1.3.7-brightgreen)]()
+[![GitHub license](https://img.shields.io/badge/scipy-1.0.1-brightgreen)]()
+[![GitHub license](https://img.shields.io/badge/License-GPL%20v3-blue)]()
+<!--(https://raw.githubusercontent.com/rabitt/pysox/master/LICENSE.md)-->
 ![M](/docs/logo_m_2.png)
 <!--Latest News:  (June. 17, 2020) N-HANS is now compatible with Python3 &  Tensorflow2 --> 
-
 
 __N-HANS__ is a Python toolkit for in-the-wild speech enhancement, including speech, music, and general audio denoising, separation, and selective noise or source suppression. The functionalities are realised based on two neural network models sharing the same architecture, but trained separately. The models are comprised of stacks of residual blocks, each conditioned on additional speech or environmental noise recordings for adapting to different unseen speakers or environments in real life. 
 
 <!--In addition to a Python API, a command line interface is provided to researchers and developers:-->
-# Installation
+<!--# Installation-->
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; __pip3 install N-HANS__
 
-__(c) 2020 Shuo Liu, Gil Keren, Björn Schuller: University of Augsburg__ published under GPL v3, see the LICENSE file for details.
+<!--__(c) 2020 Shuo Liu, Gil Keren, Björn Schuller: University of Augsburg__ published under GPL v3, see the LICENSE file for details.-->
 
 Please direct any questions or requests to Shuo Liu (shuo.liu@informatik.uni-augsburg.de).
 
