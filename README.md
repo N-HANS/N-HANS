@@ -21,7 +21,8 @@ Please direct any questions or requests to Shuo Liu (shuo.liu@informatik.uni-aug
 # Citation
 If you use N-HANS or any code from N-HANS in your research work, you are kindly asked to acknowledge the use of N-HANS in your publications.
 
-https://arxiv.org/pdf/1911.07062.pdf
+<!-- https://arxiv.org/pdf/1911.07062.pdf -->
+To be added
 
 
 # Prerequisites
