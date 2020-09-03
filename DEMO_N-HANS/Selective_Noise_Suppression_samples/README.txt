@@ -1,4 +1,4 @@
-This folder corresponds to our submitted paper "Need to Cancel Construction Noise or Dog Barks in Speech Audio? Use Single-Channel Selective Noise Suppression" for Signal Processing Letters. The audio files in this folder are generated based on Librispeech and Audio Set test dataset (citations seen in original paper).
+This folder corresponds to our submitted paper "Single-Channel Selective Noise Suppression: Suppressing Only Unwanted Noise while Retaining Naturalness" for Signal Processing Letters. The audio files in this folder are generated based on Librispeech and Audio Set test dataset (citations seen in original paper).
 
 Each example contains 5 audio files, the filename is formatted as follows
 	exampleID_SpeechID_postiveNoiseID_negativeNoiseID_positiveSNR_negativeSNR_suffix.wav
