@@ -1,0 +1,4 @@
+For reproduction of our results in the submitted paper "Single-Channel Selective Noise Suppression: Suppressing Only Unwanted Noise while Retaining Naturalness" for Signal Processing Letters, we provide our Librispeech [1] and AudioSet [2] data split each in train.txt, valid.txt, and test.txt files. The split for the Librispeech corpus is identical as in [1]. More details of the data processing are introduced in Section II in our submitted paper.
+
+[1] V. Panayotov, G. Chen, D. Povey, and S. Khudanpur, “Librispeech: an ASR corpusbased on public domain audio books,” in Proc. ICASSP, Brisbane, Australia, 2015, pp.5206–5210.
+[2] J. Gemmeke, D. Ellis, D. Freedman, A. Jansen, W. Lawrence, R. Moore, M. Plakal, andM. Ritter, “Audio Set: An ontology and human-labeled dataset for audio events,” in Proc. ICASSP, New Orleans, LA, USA, 2017, pp. 776–780.
