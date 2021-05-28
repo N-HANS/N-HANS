@@ -22,8 +22,7 @@ Please direct any questions or requests to Shuo Liu (shuo.liu@informatik.uni-aug
 If you use N-HANS or any code from N-HANS in your research work, you are kindly asked to acknowledge the use of N-HANS in your publications.
 
 <!-- https://arxiv.org/pdf/1911.07062.pdf -->
-To be added
-
+S. Liu, G. Keren, E. Parada-Cabaleiro, B. Schuller, "__N-HANS__: A neural network-based toolkit for  in-the-wild audio enhancement," Multimedia Tools and Applications, 2021, accepted, 27 pages.
 
 # Prerequisites
 * Python __3__ / Python __2.7__
