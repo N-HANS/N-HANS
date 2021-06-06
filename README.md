@@ -36,7 +36,7 @@ S. Liu, G. Keren, E. Parada-Cabaleiro, B. Schuller, "__N-HANS__: A neural networ
 
 # Usage
 ## Loading Models
-After __pip3 install N-HANS__, users are expexted to create a N-HANS folder for conducting audio denoising or separation tasks. For linux users, commands __load_denoiser__ or __load_separator__ will assist in downloading pretrained denoising and separation models, accompanied by some audio examples. The trained models and audio examples can also be found in the above N_HANS_Selective_Noise and N_HANS_Source_Separation folders, which provides users working on other operation systems the opportunity to apply N-HANS.
+After __pip3 install N-HANS__, users are expected to create a N-HANS folder for conducting audio denoising or separation tasks. For linux users, commands __load_denoiser__ or __load_separator__ will assist in downloading pretrained denoising and separation models, accompanied by some audio examples. The trained models and audio examples can also be found in the above N_HANS_Selective_Noise and N_HANS_Source_Separation folders, which provides users working on other operation systems the opportunity to apply N-HANS.
 
 ## Applying N-HANS
 N-HANS has been developed to process standard .wav audios with sample rate of 16kHz and coded in 16-bit Signed Integer PCM. With the embedded format converter written based on sox package, audio files of other formats are automatically to convert to this standard setting.
